@@ -4,16 +4,6 @@
   "outputDirectory": "dist",
   "framework": null,
   "installCommand": "pnpm install",
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "api/index.ts": {
-      "runtime": "nodejs20.x",
-      "memory": 1024,
-      "maxDuration": 60
-    }
-  },
   "routes": [
     {
       "src": "/api/(.*)",
