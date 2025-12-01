@@ -1,17 +1,16 @@
 import "dotenv/config";
-import express, { type Express, type Request, type Response } from "express";
+import express from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "../server/routers";
 import { createContext } from "../server/_core/context";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app: Express = express();
+const app = express();
 
 // Middleware
 app.use(express.json());
@@ -28,21 +27,29 @@ app.use(
 
 // Serve static files from dist/public
 const publicDir = path.join(__dirname, "..", "dist", "public");
-if (fs.existsSync(publicDir)) {
-  app.use(express.static(publicDir, { maxAge: "1h" }));
-}
+
+// Static file serving
+app.use(express.static(publicDir, { 
+  maxAge: "1h",
+  etag: false 
+}));
 
 // SPA fallback - serve index.html for all non-API routes
-app.get("*", (req: Request, res: Response) => {
+app.get("*", (req, res) => {
   const indexPath = path.join(publicDir, "index.html");
-  if (fs.existsSync(indexPath)) {
-    res.sendFile(indexPath);
-  } else {
-    res.status(404).send("Not found");
+  
+  // Check if file exists (for actual files in public)
+  const requestedFile = path.join(publicDir, req.path);
+  if (fs.existsSync(requestedFile) && fs.statSync(requestedFile).isFile()) {
+    return res.sendFile(requestedFile);
   }
+  
+  // Fallback to index.html for SPA routing
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  
+  res.status(404).send("Not found");
 });
 
-// Export for Vercel
-export default (req: VercelRequest, res: VercelResponse) => {
-  return app(req, res);
-};
+export default app;
