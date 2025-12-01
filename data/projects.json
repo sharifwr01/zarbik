@@ -1,0 +1,23 @@
+{
+  "projects": [
+    {
+      "id": "project-1764604991775",
+      "name": "File",
+      "description": "my drive public root folder",
+      "icon": "folder",
+      "link": "https://file.zarbik.xyz/",
+      "createdAt": 1764604991775,
+      "updatedAt": 1764604991775
+    },
+    {
+      "id": "project-1764605123643",
+      "name": "About Me",
+      "description": "My Portfolio Link",
+      "icon": "web",
+      "link": "https://shakib.zarbik.xyz/",
+      "createdAt": 1764605123643,
+      "updatedAt": 1764605123643
+    }
+  ],
+  "lastUpdated": 1764605123643
+}
